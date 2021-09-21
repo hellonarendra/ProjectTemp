@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import axios from 'axios';
+import { ProductTableComponent } from '../product-table/product-table.component';
 
 @Component({
   selector: 'app-new-prod-temp',
@@ -7,49 +8,59 @@ import axios from 'axios';
   styleUrls: ['./new-prod-temp.component.scss'],
 })
 export class NewProdTempComponent implements OnInit {
-  getProcesses;
-  xproductName;
+
+  processSchema = {
+    "productType": { "id": "", "name": "" },
+    "productCode": "",
+    "selectedAttributes": {"id":"","description":"", "attributesGroupAttributes":[]},
+    "process": { "id": "", "name": "" },
+    "productWeightCalculator": { "id": "", "name": "" },
+    "productPicture": {},
+    "processNo": "",
+    "processName": "",
+    "totalCost": "",
+    "productOfProcess": "",
+    "products": [
+      {
+        "name": "",
+        "id": "",
+        "weight": "",
+        "density": "",
+        "avgDensity": "",
+        "costAddOn": "",
+        "waste": ""
+      }
+    ],
+    "conversionCost": [
+      {
+        "name": "",
+        "id": "",
+        "cost": ""
+      }
+    ]
+  }
+
+  selectedAttributes={id:"",description:"",attributesGroupAttributes:[]};
+
+  attributesGroupAttributes;
   productdata;
   attributeGroup;
-  selectedDay;
-  attributesGroupAttributes;
   addNewAttribute;
+  getProcesses;
+  xproductName;
   selectProcesses;
-  static templateCounter = 1;
-  templateName;
-  selectedProductType;
-  AddAtributex;
-  AddAtributevalue = false;
-  processName;
-  processNumber;
-  conversionNo;
-  cost;
-  constructor() {}
+  selectedProcess;
+  @ViewChild(ProductTableComponent) child:ProductTableComponent;
+
+
+  
+
 
   ngOnInit(): void {
     this.ProductType();
     this.AttributeGroups();
     this.AddAtribute();
     this.GetProcess();
-  }
-
-  GetProcess() {
-    axios
-      .get(
-        'https://dadyin-product-server-7b6gj.ondigitalocean.app/api/processes/'
-      )
-      .then((response) => {
-        this.getProcesses = response.data.results;
-        this.xproductName = this.getProcesses.map((d) => ({
-          description: d.description,
-          id: d.id,
-        }));
-        // console.log(this.addNewProduct);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .then(function () {});
   }
 
   ProductType() {
@@ -63,7 +74,7 @@ export class NewProdTempComponent implements OnInit {
       .catch((error) => {
         console.log(error);
       })
-      .then(function () {});
+      .then(function () { });
   }
   AttributeGroups() {
     axios
@@ -76,41 +87,108 @@ export class NewProdTempComponent implements OnInit {
       .catch((error) => {
         console.log(error);
       })
-      .then(function () {});
+      .then(function () { });
   }
-
   AddAtribute() {
     axios
       .get(
         'https://dadyin-product-server-7b6gj.ondigitalocean.app/api/attributes/'
       )
       .then((response) => {
-        this.addNewAttribute = response.data;        
+        this.addNewAttribute = response.data;
       })
       .catch((error) => {
         console.log(error);
       })
-      .then(function () {});
+      .then(function () { });
   }
-  selectProcessChangeHandler(event: any) {
-    this.selectProcesses = event.target.value;
+  GetProcess() {
+    axios
+      .get(
+        'https://dadyin-product-server-7b6gj.ondigitalocean.app/api/processes/'
+      )
+      .then((response) => {
+        this.getProcesses = response.data.results;
+        this.xproductName = this.getProcesses.map((d) => ({
+          description: d.description,
+          id: d.id,
+        }));
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .then(function () { });
+  }
+
+
+  selectAttributeChangeHandler(event: any) {
+    this.selectedDay = event.target.value;
+    console.log(event.target.value);
+    if (event.target.value === '-1') { this.attributesGroupAttributes = []; return };
+    const attrbs = this.attributeGroup.find(
+      (d) => d.id.toString() === event.target.value.toString()
+    );
+    this.processSchema.selectedAttributes = attrbs??{id:"",description:"",attributesGroupAttributes:[]};
+   
+    this.attributesGroupAttributes = attrbs.attributesGroupAttributes;
   }
 
   selectAddNewAttributeHandler(event: any) {
     this.AddAtributex = event.target.value;
-    console.log(this.AddAtributex);
-    const selectedAtt = this.addNewAttribute.results.find(d=>(d.id.toString() === event.target.value));
-    this.attributesGroupAttributes.push({"attribute":selectedAtt});    
-    this.AddAtributevalue = true;
+    if (event.target.value === '-1') return;
+    const selectedAtt = this.addNewAttribute.results.find(d => (d.id && d.id.toString() === event.target.value));
+    if(selectedAtt){
+      this.selectedAddAttribute = selectedAtt;
+      delete selectedAtt['id'];
+      this.processSchema.selectedAttributes.attributesGroupAttributes.push({ "attribute": selectedAtt });
+    }
+  }
+  
+  selectProcessChangeHandler(event: any) {
+    this.selectProcesses = event.target.value;
+    console.log('event.target.value',event.target.value);
+
+    this.selectedProcess = this.getProcesses.find(d=>(d.id.toString()===event.target.value));
+    this.child.onProcessSelectedFromParent(this.selectedProcess);
+    
   }
 
-  selectChangeHandler(event: any) {
-    this.selectedDay = event.target.value;
-    console.log(event.target.value);
-    const attrbs = this.attributeGroup.find(
-      (d) => d.id.toString() === event.target.value.toString()
-    );
-    this.attributesGroupAttributes = attrbs.attributesGroupAttributes;
+
+
+
+
+
+
+
+
+
+
+  selectedDay;
+  static templateCounter = 1;
+  templateName;
+  selectedProductType;
+  AddAtributex;
+  AddAtributevalue = false;
+  processName;
+  processNumber;
+  conversionNo;
+  cost;
+  productCode;
+  selectedAttribute = { id: -1, Name: 'Select One' };
+  selectedAddAttribute = { id: -1, Name: 'Select One' };
+  constructor() { }
+
+  
+
+  
+
+  
+  
+
+  
+
+  oProductCodeChangeHandler(event: any) {
+    this.productCode = event.target.value;
   }
 
   selectProductTypeChangeHandler(event: any) {
@@ -133,6 +211,11 @@ export class NewProdTempComponent implements OnInit {
     this.processNumber = no;
     console.log('this.processNumber', this.processNumber);
   }
+  onafterSave(no: any) {
+    this.processSchema.selectedAttributes.attributesGroupAttributes = [];
+    this.selectedAttribute = { id: -1, Name: 'Select One' };
+    this.selectedAddAttribute = { id: -1, Name: 'Select One' };
+  }
 
   postNewTemplate(payload) {
     axios
@@ -146,7 +229,7 @@ export class NewProdTempComponent implements OnInit {
       .catch((error) => {
         console.log(error);
       })
-      .then(function () {});
+      .then(function () { });
   }
 
   onSave(event: any) {
@@ -163,7 +246,7 @@ export class NewProdTempComponent implements OnInit {
       .catch((error) => {
         console.log(error);
       })
-      .then(function () {});
+      .then(function () { });
   }
   makeAddProcessPayload() {
     return {
