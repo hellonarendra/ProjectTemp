@@ -5,6 +5,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { NgxFileDropModule } from 'ngx-file-drop';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 
 import { MatSliderModule } from '@angular/material/slider';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -18,7 +20,6 @@ import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AdminHeaderComponent } from './admin-header/admin-header.component';
 import { AddNewComponent } from './add-new/add-new.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TablePackageComponent } from './table-package/table-package.component';
 import { DragDropComponent } from './drag-drop/drag-drop.component';
 import { NewProdTempComponent } from './new-prod-temp/new-prod-temp.component';
@@ -52,6 +53,7 @@ import { ProductTableComponent } from './product-table/product-table.component';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    ToastrModule.forRoot(),
     RouterModule.forRoot([
       { path: 'admin-header', component: AdminHeaderComponent },
       // { path: '', redirectTo: 'admin-header', pathMatch: 'full' },

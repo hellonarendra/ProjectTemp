@@ -4,19 +4,40 @@
 }
 
 .row-color1 {
-  background-color: #2485a6;
-  // border: none;
+  // background-color: #4ba1fd0c;
+  // background-color: #2485a6;
+  background-color: #06729628;
 }
 .table1 {
   overflow-x: scroll;
 }
+
 .add-product-btn {
-  background-color: #2485a6;
+  // background-color: #2485a6;
+  color: #2485a6;
 }
 .process-table-div {
   border-radius: 10px;
 }
 .tdcost {
+  border-top: 1px solid rgba(0, 0, 0, 0.367);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.367);
   border-left: 1px solid white;
   border-right: 1px solid white;
+}
+.tdDelete {
+  border-top: 1px solid rgba(0, 0, 0, 0.367);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.367);
+}
+.tdSelect {
+  border-top: 1px solid rgba(0, 0, 0, 0.367);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.367);
+}
+.btn-save {
+  // background-color: #24a5d0c4;
+  background-color: #039accef;
+}
+.last-total {
+  // background-color: #4cb4d666;
+  background-color: #30a0c689;
 }

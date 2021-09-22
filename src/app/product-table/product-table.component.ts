@@ -5,7 +5,9 @@ import {
   OnInit,
   Output,
   ChangeDetectorRef,
+  ViewChild,
 } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import axios from 'axios';
 
 @Component({
@@ -73,6 +75,9 @@ export class ProductTableComponent implements OnInit {
     };
   }
 
+  selectProcesses;
+  selectedProcess;
+  getProcesses;
   xprocessNumber;
   processName;
   productOfProcess;
@@ -82,6 +87,7 @@ export class ProductTableComponent implements OnInit {
   totalCostAddOn = 0.0;
   totalConversionCost = 0.0;
   totalCost = 0.0;
+  @ViewChild(ProductTableComponent) child: ProductTableComponent;
   public createdProcessViewArray: Array<any> = [];
   public reverseCreatedProcessViewArray: Array<any> = [];
   attributeList = [];
@@ -108,11 +114,15 @@ export class ProductTableComponent implements OnInit {
   @Input() producttypevalue = '';
   @Input() productTemplateDescription = '';
 
-  constructor(private changeDetection: ChangeDetectorRef) {}
+  constructor(
+    private changeDetection: ChangeDetectorRef,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
     this.getProducts();
     this.Conversion();
+    this.GetProcess();
     for (let index = 1; index < 12; index++) {
       this.getAttributes(index);
     }
@@ -121,6 +131,36 @@ export class ProductTableComponent implements OnInit {
     this.xprocessNumber = ProductTableComponent.processNumber;
     // this.onProcessNumberChange.emit(this.xprocessNumber);
   }
+  GetProcess() {
+    axios
+      .get(
+        'https://dadyin-product-server-7b6gj.ondigitalocean.app/api/processes/'
+      )
+      .then((response) => {
+        this.getProcesses = response.data.results;
+        this.xproductName = this.getProcesses.map((d) => ({
+          description: d.description,
+          id: d.id,
+        }));
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .then(function () {});
+  }
+
+  selectProcessChangeHandler(event: any) {
+    this.selectProcesses = event.target.value;
+    console.log('event.target.value', event.target.value);
+    if (this.selectProcesses === 'addProcessButton') {
+      this.buttonAddProcess();
+    }
+    this.selectedProcess = this.getProcesses.find(
+      (d) => d.id.toString() === event.target.value
+    );
+    this.child.onProcessSelectedFromParent(this.selectedProcess);
+  }
+
   onProcessNameChangeHandler(event: any) {
     this.processName = event.target.value;
     console.log(event.target.value);
@@ -280,7 +320,7 @@ export class ProductTableComponent implements OnInit {
 
   onProductPercentUsedChangeHandler(event: any, i: number) {
     const productPercetUsed = event.target.value;
-    if (productPercetUsed < 0 || productPercetUsed >= 100) return;
+    if (productPercetUsed < 0 || productPercetUsed > 100) return;
     const selectedProduct = this.processSchema.products[i];
 
     if (this.isProductAttribute(selectedProduct, 'PercentUsed')) {
@@ -632,8 +672,18 @@ export class ProductTableComponent implements OnInit {
       .catch((error) => {
         console.log(error);
       })
-      .then(function () {});
+      .then(function () {})
+      .then(() => {
+        this.toastr.success('New process is added Successfully');
+      });
   }
+
+  public buttonAddProcess() {
+    console.log('Add New Process Button is called:');
+
+    this.saveProcess();
+  }
+
   makeAddProductPayload() {
     const processProducts = this.getProcessProducts();
     const processConversionTypes = this.getProcessConversionTypes();
@@ -755,7 +805,6 @@ export class ProductTableComponent implements OnInit {
       )
       .then((response) => {
         console.log('resssss', response.data);
-
         // this.productList.push(response.data);
         // this.previousCreatedProcess = response.data;
         // this.createdProcessResponseArray.push(response.data);
@@ -770,7 +819,10 @@ export class ProductTableComponent implements OnInit {
       .catch((error) => {
         console.log(error);
       })
-      .then(function () {});
+      .then(function () {})
+      .then(() => {
+        this.toastr.success('Process is saved successfully!');
+      });
   }
   makeAllProcessAddProductPayload() {
     const processProducts = this.getProcessProducts();

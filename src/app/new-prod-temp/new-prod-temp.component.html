@@ -5,7 +5,7 @@
       <span class=" pr-3 ml-auto mr-2 mt-auto mb-auto"> <button class="btn btn-light"> <img
             src="./../../assets/sign-out-alt-solid.svg" width="25px" alt="">Logout</button></span>
     </div>
-    <div class="row">
+    <div class="row last-margin">
       <div class="col">
         <div class="row pl-4 pr-4 pt-4">
           <div class="col-md-3"> Product Type
@@ -18,14 +18,15 @@
             </select>
           </div>
           <div class="col-md-3"> Template Description
-            <input type="text" class="form-control mb-3" placeholder="Product Code" (change)="oProductCodeChangeHandler($event)">
+            <input type="text" class="form-control mb-3" placeholder="Product Code"
+              (change)="oProductCodeChangeHandler($event)">
           </div>
         </div>
         <div class="row pl-4 pr-4 ">
           <div class="col-md-3">
             Select Attribute
-            <select class="form-control mb-3 font-weight-light" 
-            (change)="selectAttributeChangeHandler($event)" [(ngModel)]="selectedAttribute.id">
+            <select class="form-control mb-3 font-weight-light" (change)="selectAttributeChangeHandler($event)"
+              [(ngModel)]="selectedAttribute.id">
               <option value="-1">Select Attribute</option>
               <option value="{{item.id}}" *ngFor="let item of attributeGroup">
                 {{item.description}}
@@ -34,13 +35,11 @@
           </div>
           <div class="col-md-3">
             + Add new Attribute
-            <select class="form-control mb-3 font-weight-light  " 
-             (change)="selectAddNewAttributeHandler($event)"
-             *ngIf="addNewAttribute">
+            <select class="form-control mb-3 font-weight-light  " (change)="selectAddNewAttributeHandler($event)"
+              *ngIf="addNewAttribute">
               <option value="-1">Add Attribute</option>
-              <option value="{{item.id}}" 
-              [selected]="selectedAddAttribute.id === item.id"
-              *ngFor="let item of addNewAttribute.results">
+              <option value="{{item.id}}" [selected]="selectedAddAttribute.id === item.id"
+                *ngFor="let item of addNewAttribute.results">
                 {{item.description}}
               </option>
             </select>
@@ -57,34 +56,28 @@
           <app-drag-drop></app-drag-drop>
         </div>
       </div>
-
     </div>
-    <div class="row pl-4 pr-4 pb-4">
+    <!-- <div class="row pl-4 pr-4 last-margin">
       <div class="col-md-3"> Process
-        <select name="" id="" class="form-control mb-3 font-weight-light" (change)="selectProcessChangeHandler($event)">
+        <select name="" id="" class="form-control  font-weight-light" (change)="selectProcessChangeHandler($event)">
           <option value="-1">Total Process</option>
           <option value="{{data.id}}" *ngFor="let data of getProcesses">{{data.description}}</option>
         </select>
       </div>
       <div class="col-md-3"> Product Weight Calcuator
-        <select class="form-control mb-3 font-weight-light">
+        <select class="form-control  font-weight-light">
           <option><a href="https://www.wikipedia.org/"> Create new Calculator</a></option>
           <option> Calculator 1</option>
           <option> Calculator 2</option>
         </select>
       </div>
-    </div>
-    <app-product-table class="table-width" 
-      (onProcessNameChange)="onProcessNameChangeHandler($event)"
+    </div> -->
+    <app-product-table class="table-width" (onProcessNameChange)="onProcessNameChangeHandler($event)"
       (onProcessNumberChange)="onProcessNumberChangeHandler($event)"
-      (onConversionChange)="ononConversionChangeHandler($event)" 
-      (onCostChange)="onCostChangeHandler($event)"
-      [xattributesGroupAttributes]="attributesGroupAttributes"
-      [producttypevalue]="productCode"
-      [productTemplateDescription]="selectedProductType"
-      [xselectedProcess]="selectedProcess"
+      (onConversionChange)="ononConversionChangeHandler($event)" (onCostChange)="onCostChangeHandler($event)"
+      [xattributesGroupAttributes]="attributesGroupAttributes" [producttypevalue]="productCode"
+      [productTemplateDescription]="selectedProductType" [xselectedProcess]="selectedProcess"
       (afterSave)="onafterSave($event)">
     </app-product-table>
-    
   </div>
 </div>
