@@ -279,6 +279,7 @@ export class ProductTableComponent implements OnInit {
       avgDenst = avgDenst ?? 0;
       this.totalAverageDensity += parseFloat(avgDenst);
     }
+    this.totalAverageDensity = parseFloat(this.totalAverageDensity.toFixed(6));
   }
 
   calculateTotalCostAddOn() {
@@ -289,6 +290,7 @@ export class ProductTableComponent implements OnInit {
       costAddon = costAddon ?? 0.0;
       this.totalCostAddOn += parseFloat(costAddon);
     }
+    this.totalCostAddOn = parseFloat(this.totalCostAddOn.toFixed(6));
   }
 
   calculateTotalConversioncost() {
