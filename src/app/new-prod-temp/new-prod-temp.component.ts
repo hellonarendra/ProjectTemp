@@ -43,6 +43,10 @@ export class NewProdTempComponent implements OnInit {
     ],
   };
 
+  selectedProductTypes:{
+    id: -1
+  };
+
   selectedAttributes = {
     id: '',
     description: '',
@@ -177,7 +181,7 @@ export class NewProdTempComponent implements OnInit {
   processNumber;
   conversionNo;
   cost;
-  productCode;
+  productCode='';
   selectedAttribute = { id: -1, Name: 'Select One' };
   selectedAddAttribute = { id: -1, Name: 'Select One' };
   constructor() {}
@@ -210,6 +214,9 @@ export class NewProdTempComponent implements OnInit {
     this.processSchema.selectedAttributes.attributesGroupAttributes = [];
     this.selectedAttribute = { id: -1, Name: 'Select One' };
     this.selectedAddAttribute = { id: -1, Name: 'Select One' };
+    this.selectedProductTypes = { id: -1 };
+    this.productCode = '';
+
   }
 
   postNewTemplate(payload) {

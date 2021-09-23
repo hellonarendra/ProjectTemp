@@ -124,12 +124,13 @@
     <span> <label class="h5 pl-4 pr-1 ">Process Number: </label>
       <span class="h6 pr-2"> {{createdProcess.processNo}}</span></span>
     <label class="h5 pl-5">Name: </label>
-    <input type="text " class="form-control-sm ml-1" placeholder="Name" [(ngModel)]="createdProcess.processName">
+    <input type="text " class="form-control-sm ml-1" placeholder="Name" [(ngModel)]="createdProcess.processName" 
+    [readonly]="true">
     <span> <label class="h5 pl-5 pr-1">Total: </label> <span class="h6">
         {{createdProcess.totalCost | currency}}</span></span>
     <label class="h5  pl-5">Product of this process: </label>
     <input type="text" class="form-control-sm ml-1" [(ngModel)]="createdProcess.productOfProcess"
-      placeholder="Final Product">
+      placeholder="Final Product" [readonly]="true">
     <!-- <button class=" btn add-product-btn  mb-3 ml-auto   mr-3" type="button" (click)="addFieldValue();  addData()">+
         Add New Product</button> -->
   </div>
@@ -153,21 +154,21 @@
         <tr *ngFor="let product of createdProcess.selectedProducts" class="text-center">
 
           <td *ngIf="product && product.description">
-            <select name="" id="" class="form-control-sm">
-              <option value="{{data.id}}" *ngFor="let data of productList" [selected]="product.id === data.id">
+            <select name="" id="" class="form-control-sm" [disabled]="true">
+              <option value="{{data.id}}" *ngFor="let data of productList" 
+              [selected]="product.id === data.id">
                 {{data.description}}</option>
             </select>
           </td>
           <td *ngIf="product && product.description">{{getAttributeValueByName(product,'Cost') | currency}}</td>
-          <td *ngIf="product && product.description"><input type="number" placeholder="Weight"
+          <td *ngIf="product && product.description"><input type="number" placeholder="Weight" [readonly]="true"
               value="{{getAttributeValueByName(product,'PercentUsed')}}"></td>
           <td *ngIf="product && product.description">{{getAttributeValueByName(product,'Density')}}</td>
           <td *ngIf="product && product.description">{{getAttributeValueByName(product,'AverageDensity')}}</td>
           <td *ngIf="product && product.description">{{getAttributeValueByName(product,'CostAddOn')}}</td>
           <td *ngIf="product && product.description"> <input type="number" placeholder="Waste"
-              value="{{getAttributeValueByName(product,'PercentWaste')}}"> </td>
-          <td *ngIf="product && product.description"><i class="fa fa-pencil pl-5" aria-hidden="true"></i>
-            <i class="fa fa-trash-o pl-5" aria-hidden="true"></i>
+              value="{{getAttributeValueByName(product,'PercentWaste')}}" [readonly]="true"> </td>
+          <td *ngIf="product && product.description">
           </td>
         </tr>
       </ng-container>
@@ -196,15 +197,15 @@
     <tbody *ngFor="let field of createdProcess.selectedConversion; let i = index">
       <tr class="row-color1 ">
         <td scope="col" class="tdSelect">
-          <select name="" id="" class="form-control-sm">
+          <select name="" id="" class="form-control-sm" [disabled]="true">
             <option value="{{name.id}}" *ngFor="let name of ConversionName;"
               [selected]="createdProcess.selectedConversion[i].id === name.id">{{name.description}}</option>
           </select>
         </td>
         <td scope="col" class="tdcost text-center">
-          <input type="number" placeholder="Enter Cost" value={{getConversionCost(field)}}>
+          <input type="number" placeholder="Enter Cost" value={{getConversionCost(field)}} [readonly]="true">
         </td>
-        <td scope="col" class="tdDelete"><i class="fa fa-trash-o text-dark pl-5 tdDelete" aria-hidden="true"></i></td>
+        <td scope="col" class="tdDelete"></td>
       </tr>
     </tbody>
     <tr class="last-total bg-primary text-left ">

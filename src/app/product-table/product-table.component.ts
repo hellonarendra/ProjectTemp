@@ -123,9 +123,10 @@ export class ProductTableComponent implements OnInit {
     this.getProducts();
     this.Conversion();
     this.GetProcess();
-    for (let index = 1; index < 12; index++) {
-      this.getAttributes(index);
-    }
+    // for (let index = 1; index < 12; index++) {
+    //   this.getAttributes(index);
+    // }
+    this.getAttributes(1);
     console.log('tttt', this.attributeList);
 
     this.xprocessNumber = ProductTableComponent.processNumber;
@@ -154,11 +155,12 @@ export class ProductTableComponent implements OnInit {
     console.log('event.target.value', event.target.value);
     if (this.selectProcesses === 'addProcessButton') {
       this.buttonAddProcess();
-    }
+    } else{
     this.selectedProcess = this.getProcesses.find(
       (d) => d.id.toString() === event.target.value
     );
-    this.child.onProcessSelectedFromParent(this.selectedProcess);
+    this.onProcessSelectedFromParent(this.selectedProcess);
+    }
   }
 
   onProcessNameChangeHandler(event: any) {
@@ -603,7 +605,11 @@ export class ProductTableComponent implements OnInit {
       this.xattributesGroupAttributes
     );
     this.xselectedProduct = null;
-    if (
+    if(!(this.processName && this.productOfProcess)){
+        this.callProductTemplate();
+        return;
+    }
+    else if (
       !this.xattributesGroupAttributes ||
       this.xattributesGroupAttributes.length === 0 ||
       !this.processName ||
@@ -678,6 +684,71 @@ export class ProductTableComponent implements OnInit {
       });
   }
 
+  callProductTemplate(){
+    const payload = {
+      description: this.producttypevalue,
+      productType: this.productTemplateDescription,
+      productTemplateAttributes: this.xattributesGroupAttributes,
+    };
+    console.log('reqestpayload', JSON.stringify(payload));
+    axios
+      .post(
+        'https://dadyin-product-server-7b6gj.ondigitalocean.app/api/product_templates/',
+        payload
+      )
+      .then((response) => {
+        // const view = {
+        //   attributes: this.xattributesGroupAttributes,
+        //   processName: this.processName,
+        //   processNo: this.xprocessNumber,
+        //   productOfProcess: this.productOfProcess,
+        //   selectedProducts: this.processSchema.products,
+        //   selectedConversion: this.addedConversion,
+        //   totalAverageDensity: this.totalAverageDensity,
+        //   totalCost: this.totalCost,
+        //   totalCostAddOn: this.totalCostAddOn,
+        // };
+        // this.createdProcessViewArray.push(view);
+
+        // this.reverseCreatedProcessViewArray = JSON.parse(
+        //   JSON.stringify(this.createdProcessViewArray)
+        // );
+        // this.reverseCreatedProcessViewArray.reverse();
+
+        // console.log(
+        //   ' this.createdProcessViewArray this.createdProcessViewArray',
+        //   this.createdProcessViewArray
+        // );
+
+        console.log('resssss', response.data);
+
+        // this.productList.push(response.data);
+        // this.previousCreatedProcess = response.data;
+        // this.createdProcessResponseArray.push(response.data);
+        // ProductTableComponent.processNumber += 1;
+        // this.xprocessNumber = ProductTableComponent.processNumber;
+        // this.processName = '';
+        // this.productOfProcess = '';
+       
+        this.afterSave.emit();
+        // this.processSchema.products = [];
+        // this.processSchema.products.push(response.data);
+        // this.addedConversion = [];
+        // this.totalAverageDensity = 0.0;
+        // this.totalCostAddOn = 0.0;
+        // this.totalCost = 0.0;
+        // this.totalConversionCost = 0.0;
+      
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .then(function () {})
+      .then(() => {
+        this.toastr.success('New template is added Successfully');
+      });
+  }
+
   public buttonAddProcess() {
     console.log('Add New Process Button is called:');
 
@@ -692,13 +763,9 @@ export class ProductTableComponent implements OnInit {
     return {
       description: this.productOfProcess,
       businessAccount: null,
-      productTemplate: {
-        description: this.producttypevalue,
-        productType: this.productTemplateDescription,
-        productTemplateAttributes: this.xattributesGroupAttributes,
-      },
+      productTemplate: null,
       process: {
-        id: 1,
+        calculatorMeta: 1,
         description: this.processName,
         processProducts: processProducts,
         processConversionTypes: processConversionTypes,
@@ -831,9 +898,13 @@ export class ProductTableComponent implements OnInit {
     return {
       description: this.productOfProcess,
       businessAccount: null,
-      productTemplate: null,
+      productTemplate: {
+        description: this.producttypevalue,
+        productType: this.productTemplateDescription,
+        productTemplateAttributes: this.xattributesGroupAttributes,
+      },
       process: {
-        id: 1,
+        calculatorMeta: 1,
         description: this.processName,
         processProducts: [...processProducts, ...modifiedAsSchema],
         processConversionTypes: processConversionTypes,
@@ -856,7 +927,7 @@ export class ProductTableComponent implements OnInit {
     this.addedConversion = [];
     for (let index = 0; index < value.processConversionTypes.length; index++) {
       const element = value.processConversionTypes[index];
-      if (element.attribute.description === 'Cost') {
+      if (element.attribute && element.attribute.description === 'Cost') {
         const obj = { id: element.id, cost: element.attribute.attributeValue };
         this.addedConversion.push(obj);
       }
