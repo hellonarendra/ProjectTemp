@@ -607,11 +607,8 @@ export class ProductTableComponent implements OnInit {
       this.xattributesGroupAttributes
     );
     this.xselectedProduct = null;
-    if(!(this.processName && this.productOfProcess)){
-        this.callProductTemplate();
-        return;
-    }
-    else if (
+    
+    if (
       !this.xattributesGroupAttributes ||
       this.xattributesGroupAttributes.length === 0 ||
       !this.processName ||
@@ -864,6 +861,10 @@ export class ProductTableComponent implements OnInit {
   }
 
   saveAllProcess() {
+    if(!(this.processName && this.productOfProcess)){
+      this.callProductTemplate();
+      return;
+  }
     console.log('dddd-------------');
     const payload = this.makeAllProcessAddProductPayload();
     console.log('dddd-------------', JSON.stringify(payload));
@@ -917,7 +918,7 @@ export class ProductTableComponent implements OnInit {
 
   onProcessSelectedFromParent(value) {
     console.log('vaqlue', value);
-    this.xprocessNumber = value.id;
+    this.xprocessNumber = this.xprocessNumber;
     this.processName = value.description;
     this.processSchema.products = value.processProducts.map((d, index) => ({
       id: d.id,
